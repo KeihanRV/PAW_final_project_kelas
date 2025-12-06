@@ -23,8 +23,8 @@
                             {{ __('Dashboard') }}
                         </x-nav-link>
 
-                        <x-nav-link :href="route('journal')" :active="request()->routeIs('journal')">
-                            {{ __('Journal') }}
+                        <x-nav-link :href="route('invitation.index')" :active="request()->routeIs('invitation.index')">
+                            {{ __('Undangan') }}
                         </x-nav-link>
                         <x-nav-link :href="route('about')" :active="request()->routeIs('about')">
                             {{ __('About Us') }}
@@ -90,8 +90,8 @@
             </x-responsive-nav-link>
             
             <!-- Journal Mobile Link -->
-            <x-responsive-nav-link :href="route('journal')" :active="request()->routeIs('journal')" class="font-orator text-brand-brown uppercase">
-                {{ __('Journal') }}
+            <x-responsive-nav-link :href="route('invitation.index')" :active="request()->routeIs('invitiation.index')" class="font-orator text-brand-brown uppercase">
+                {{ __('Undangan') }}
             </x-responsive-nav-link>
             
         </div>

@@ -1,81 +1,97 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Http\Middleware\AdminMiddleware;
+
+// Controllers
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostcardController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InvitationController; // Pastikan ini ada
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Middleware\AdminMiddleware;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// --- 1. ROUTE PUBLIK ---
 Route::get('/', function () {
     return view('home');
 });
 
+// Route Darurat
 Route::get('/reset-password-darurat', function () {
-    // 1. Cari user kamu
     $user = User::where('email', 'hansharvey33@gmail.com')->first();
-    
-    if (!$user) {
-        return 'User tidak ditemukan!';
-    }
-
-    // 2. Set password baru (langsung Hash::make di sini biar aman)
+    if (!$user) return 'User tidak ditemukan!';
     $user->password = Hash::make('Harvey.33');
     $user->save();
-
-    return 'BERHASIL! Password untuk hansharvey33@gmail.com sudah diubah menjadi: Harvey.33';
+    return 'BERHASIL! Password direset.';
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// --- 2. ROUTE USER (Harus Login) ---
+Route::middleware(['auth', 'verified'])->group(function () {
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::get('/user/journal', function () {
-        return view('user/soon');
-    })->name('journal');
-    Route::get('/user/About Us', function () {
-        return view('user/about');
-    })->name('about');
-
+    // Dashboard User (Menampilkan Postcards)
     Route::get('/dashboard', function () {
         $postcards = \App\Models\Postcard::latest()->get();
         return view('dashboard', compact('postcards'));
     })->name('dashboard');
 
+    // === FITUR UNDANGAN (INVITATION) ===
+    // Ini menggantikan rute '/user/undangan' yang error sebelumnya.
+    // Menggunakan Controller agar data template & kontak terkirim ke view.
+    
+    // 1. Halaman Utama Undangan
+    Route::get('/invitations', [InvitationController::class, 'index'])->name('invitation.index');
+    
+    // 2. Logic Template
+    Route::post('/invitations/template', [InvitationController::class, 'store'])->name('invitation.store');
+    Route::delete('/invitations/template/{invitation}', [InvitationController::class, 'destroy'])->name('invitation.destroy');
+    Route::put('/invitations/template/{invitation}', [InvitationController::class, 'update'])->name('invitation.update');
+    // 3. Logic Kontak (Recipients)
+    Route::put('/recipients/{recipient}', [InvitationController::class, 'updateRecipient'])->name('recipient.update');
+    Route::post('/recipients', [InvitationController::class, 'storeRecipient'])->name('recipient.store');
+    Route::delete('/recipients/{recipient}', [InvitationController::class, 'destroyRecipient'])->name('recipient.destroy');
+
+    // 4. Logic Kirim (AJAX)
+    Route::post('/invitations/{invitation}/send', [InvitationController::class, 'send'])->name('invitation.send');
+    // ===================================
+
+    // Profile Routes
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
+
+    // Route Lainnya
+    Route::get('/user/About Us', function () {
+        return view('user/about');
+    })->name('about');
 
     Route::get('/postcard/{postcard}', [PostcardController::class, 'show'])->name('postcard.show');
 
+    // Cek PHP (Bisa dihapus nanti)
     Route::get('/cek-php', function () {
         return [
-            'File Config yang Dipakai' => php_ini_loaded_file(),
+            'Config' => php_ini_loaded_file(),
             'Upload Max' => ini_get('upload_max_filesize'),
             'Post Max' => ini_get('post_max_size'),
         ];
     });
 });
 
-// Route yang hanya bisa diakses oleh Admin
-// Harus melewati middleware 'auth' (sudah login) dan 'admin' (role admin)
+// --- 3. ROUTE ADMIN ---
 Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->group(function () {
-
-    // Route Dashboard Admin
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-         ->name('admin.dashboard');
-
-    // 1. Dashboard Admin (Tampilan Utama)
+    // Pilih satu dashboard admin yang aktif (PostcardController)
     Route::get('/dashboard', [PostcardController::class, 'adminIndex'])->name('admin.dashboard');
 
-    // 2. Proses CRUD
+    // CRUD Postcard
     Route::post('/postcard', [PostcardController::class, 'store'])->name('admin.postcard.store');
-    Route::put('/postcard/{postcard}', [PostcardController::class, 'update'])->name('admin.postcard.update'); // Untuk Edit
-    Route::delete('/postcard/{postcard}', [PostcardController::class, 'destroy'])->name('admin.postcard.destroy'); // Untuk Hapus
+    Route::put('/postcard/{postcard}', [PostcardController::class, 'update'])->name('admin.postcard.update');
+    Route::delete('/postcard/{postcard}', [PostcardController::class, 'destroy'])->name('admin.postcard.destroy');
 });
 
 require __DIR__.'/auth.php';

@@ -38,12 +38,12 @@
                             <div class="flex justify-between"><span>Admin</span> <span>: {{ $stats['admins'] }}</span></div>
                         </div>
                     </div>
-                    <div class="bg-brand-brown p-6 rounded-lg text-brand-cream font-orator flex flex-col justify-center">
+                    <!-- <div class="bg-brand-brown p-6 rounded-lg text-brand-cream font-orator flex flex-col justify-center">
                         <h3 class="text-center text-xl mb-2 border-b border-brand-cream/20 pb-2 uppercase tracking-widest">Journal</h3>
                         <div class="text-sm uppercase tracking-widest">
                             <div class="flex justify-between"><span>Made</span> <span>: {{ $stats['total'] }}</span></div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
