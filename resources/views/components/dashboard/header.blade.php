@@ -4,8 +4,13 @@
         <h2 class="text-2xl md:text-3xl font-orator font-bold text-brand-brown uppercase tracking-widest mb-8 leading-tight">
             Welcome, <br>
             <span class="text-brand-brown-hover">{{ Auth::user()->name }}</span>
+            
         </h2>
 
+        <a href="{{ route('invitation.index') }}" 
+           class="inline-block px-10 py-3 border-2 border-brand-brown rounded-full text-brand-brown font-orator text-sm font-bold uppercase tracking-widest hover:bg-brand-brown hover:text-brand-cream transition duration-300">
+            Send Invitations
+        </a>
         @if(auth()->check() && auth()->user()->role === 'admin')
             <a href="{{ route('admin.dashboard') }}" 
                class="inline-block px-10 py-3 border-2 border-brand-brown rounded-full text-brand-brown font-orator text-sm font-bold uppercase tracking-widest hover:bg-brand-brown hover:text-brand-cream transition duration-300">

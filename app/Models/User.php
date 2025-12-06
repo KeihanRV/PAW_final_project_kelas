@@ -51,4 +51,12 @@ class User extends Authenticatable
             'birthdate' => 'date',
         ];
     }
+
+    public function recipients() {
+        return $this->hasMany(Recipient::class);
+    }
+
+    public function invitations() {
+        return $this->hasMany(Invitation::class);
+    }
 }

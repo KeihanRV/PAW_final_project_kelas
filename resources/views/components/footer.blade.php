@@ -13,8 +13,8 @@
                     Dashboard
                 </x-footer-link>
 
-                <x-footer-link :href="route('journal')">
-                    Journal
+                <x-footer-link :href="route('invitation.index')">
+                    Undangan
                 </x-footer-link>
 
                 <x-footer-link :href="route('about')">

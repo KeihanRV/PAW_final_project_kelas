@@ -18,9 +18,9 @@
                         
                         <div class="pr-0 lg:pr-8">
                             <p class="text-justify font-sans text-sm leading-relaxed opacity-90">
-                                The place where your stories begin. You can write your thoughts, capture memories, and remember everything that happened in your journal. The story of who you are starts with your own action.
+                                The place where your gatherings begin. You can craft timeless invitations, announce special moments, and bring people together. The story of your celebration starts with a single invite.
                                 <br><br>
-                                The postcard is a symbol of connection, a tangible piece of communication that bridges distances and brings people closer together. Just like our platform, postcards carry stories, emotions, and memories across time and space, reminding us of the importance of cherishing moments and relationships.
+                                The postcard is a symbol of connection, a tangible piece of communication that bridges distances. Just like our invitations, postcards carry stories, emotions, and warmth across time and space, reminding us of the importance of cherishing relationships.
                             </p>
                         </div>
                     </div>
@@ -42,7 +42,7 @@
                     </h2>
 
                     <p class="font-sans text-sm md:text-base leading-relaxed tracking-wide opacity-90">
-                        ARCH means archive, a place to store and preserve your thoughts, memories, and inspirations. ARCH also means leading, means you are the one who lead your own journey. When it start, and when it ended, also how people remember it.                    
+                        ARCH means archive, a curated collection of life's pivotal moments and the people who share them. ARCH also means leading; you are the architect of your own gatherings. When they start, how they unfold, and how they are remembered by those you invite.
                     </p>
                 </div>
 
