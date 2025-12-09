@@ -24,7 +24,7 @@
                         </x-nav-link>
 
                         <x-nav-link :href="route('invitation.index')" :active="request()->routeIs('invitation.index')">
-                            {{ __('Undangan') }}
+                            {{ __('Invitation') }}
                         </x-nav-link>
                         <x-nav-link :href="route('about')" :active="request()->routeIs('about')">
                             {{ __('About Us') }}
@@ -91,7 +91,7 @@
             
             <!-- Journal Mobile Link -->
             <x-responsive-nav-link :href="route('invitation.index')" :active="request()->routeIs('invitiation.index')" class="font-orator text-brand-brown uppercase">
-                {{ __('Undangan') }}
+                {{ __('Invitation') }}
             </x-responsive-nav-link>
             
         </div>

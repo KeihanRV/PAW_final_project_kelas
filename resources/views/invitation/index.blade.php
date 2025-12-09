@@ -1,4 +1,4 @@
-<x-app-layout title="Invitation Manager">
+<x-app-layout title="Invitation">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orator+Std&family=Reenie+Beanie&display=swap');
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -19,6 +19,18 @@
                 <div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none font-orator text-6xl rotate-12">CONTACTS</div>
                 <h2 class="font-orator text-xl text-[#4A3B32] border-b-2 border-[#4A3B32] pb-2 mb-4">ADDRESS BOOK</h2>
 
+                <div class="flex gap-2 mb-4 z-10 relative">
+                    <div class="relative flex-1">
+                        <input type="text" id="searchRecipient" placeholder="Search Name..." 
+                               class="w-full bg-[#dcd0bc]/40 border border-[#4A3B32]/30 rounded px-2 py-1 text-sm font-orator text-[#4A3B32] focus:border-[#4A3B32] focus:ring-0 placeholder-[#4A3B32]/40">
+                    </div>
+                    <button id="sortButton" onclick="toggleSort()" 
+                            class="bg-[#4A3B32]/10 hover:bg-[#4A3B32]/20 text-[#4A3B32] px-3 py-1 rounded border border-[#4A3B32]/20 transition flex items-center gap-1 font-orator text-xs whitespace-nowrap"
+                            title="Sort Alphabetically">
+                        <span>AZ</span> ↓
+                    </button>
+                </div>
+
                 <form action="{{ route('recipient.store') }}" method="POST" class="mb-6 bg-[#dcd0bc]/50 p-4 rounded border border-[#4A3B32]/20">
                     @csrf
                     <div class="grid gap-2">
@@ -30,11 +42,11 @@
                     </div>
                 </form>
 
-                <div class="flex-1 overflow-y-auto no-scrollbar space-y-2 pr-2">
+                <div id="recipientList" class="flex-1 overflow-y-auto no-scrollbar space-y-2 pr-2">
                     @forelse($recipients as $recipient)
-                        <div class="group flex justify-between items-center p-2 hover:bg-[#dcd0bc] rounded transition cursor-default">
+                        <div class="recipient-item group flex justify-between items-center p-2 hover:bg-[#dcd0bc] rounded transition cursor-default">
                             <div>
-                                <div class="font-bold text-[#4A3B32] font-reenie text-xl">{{ $recipient->name }}</div>
+                                <div class="recipient-name font-bold text-[#4A3B32] font-reenie text-xl">{{ $recipient->name }}</div>
                                 <div class="text-[10px] font-orator text-[#4A3B32]/70">{{ $recipient->whatsapp_number }}</div>
                             </div>
                             <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
@@ -130,12 +142,10 @@
                     <label class="block text-xs font-orator text-[#4A3B32] mb-1">EVENT NAME</label>
                     <input type="text" name="event_name" required class="w-full bg-transparent border-b border-[#4A3B32] focus:ring-0 font-reenie text-xl px-0 placeholder-[#4A3B32]/30">
                 </div>
-                
                 <div>
                     <label class="block text-xs font-orator text-[#4A3B32] mb-1">SENDER NAME (Optional)</label>
                     <input type="text" name="sender_name" class="w-full bg-transparent border-b border-[#4A3B32] focus:ring-0 font-orator text-sm px-0 placeholder-[#4A3B32]/30" placeholder="Default: {{ Auth::user()->name }}">
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-orator text-[#4A3B32] mb-1">DATE</label>
@@ -173,12 +183,10 @@
                     <label class="block text-xs font-orator text-[#4A3B32] mb-1">EVENT NAME</label>
                     <input type="text" name="event_name" id="edit_event_name" required class="w-full bg-transparent border-b border-[#4A3B32] focus:ring-0 font-reenie text-xl px-0">
                 </div>
-                
                 <div>
                     <label class="block text-xs font-orator text-[#4A3B32] mb-1">SENDER NAME (Optional)</label>
                     <input type="text" name="sender_name" id="edit_sender_name" class="w-full bg-transparent border-b border-[#4A3B32] focus:ring-0 font-orator text-sm px-0" placeholder="Default: {{ Auth::user()->name }}">
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-orator text-[#4A3B32] mb-1">DATE</label>
@@ -207,7 +215,7 @@
     </div>
 
     <div id="sendModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-[#EBE2D1] w-full max-w-3xl rounded-xl shadow-2xl p-6 relative border-t-[8px] border-[#4A3B32] flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-hidden">
+         <div class="bg-[#EBE2D1] w-full max-w-3xl rounded-xl shadow-2xl p-6 relative border-t-[8px] border-[#4A3B32] flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-hidden">
             <button onclick="closeSendModal()" class="absolute top-4 right-4 text-[#4A3B32] hover:text-red-600 z-10">✕</button>
             
             <div class="w-full md:w-1/3 flex flex-col">
@@ -263,6 +271,57 @@
     </div>
 
     <script>
+        // --- LOGIC BARU: SEARCH & SORT ---
+        
+        // 1. Search Logic
+        document.getElementById('searchRecipient').addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            const items = document.querySelectorAll('.recipient-item');
+
+            items.forEach(item => {
+                const name = item.querySelector('.recipient-name').innerText.toLowerCase();
+                if(name.includes(filter)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // 2. Sort Logic
+        let isAscending = true;
+        function toggleSort() {
+            const list = document.getElementById('recipientList');
+            // Ambil semua elemen recipient-item ke dalam Array
+            const items = Array.from(list.getElementsByClassName('recipient-item'));
+            const btnIcon = document.getElementById('sortButton').querySelector('span');
+            const btn = document.getElementById('sortButton');
+
+            items.sort((a, b) => {
+                const nameA = a.querySelector('.recipient-name').innerText.toUpperCase();
+                const nameB = b.querySelector('.recipient-name').innerText.toUpperCase();
+                
+                if (isAscending) {
+                    return nameA.localeCompare(nameB); // ASC
+                } else {
+                    return nameB.localeCompare(nameA); // DESC
+                }
+            });
+
+            // Re-append items (ini akan memindahkan posisi elemen di DOM)
+            items.forEach(item => list.appendChild(item));
+
+            // Flip state and update UI
+            isAscending = !isAscending;
+            if(isAscending) {
+                btn.innerHTML = '<span>AZ</span> ↓';
+            } else {
+                btn.innerHTML = '<span>ZA</span> ↑';
+            }
+        }
+
+        // --- END LOGIC BARU ---
+
         @if ($errors->any())
             document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById('createTemplateModal').classList.remove('hidden');
@@ -275,7 +334,6 @@
             document.getElementById('imageInspector').classList.remove('hidden');
         }
 
-        // Logic Edit Recipient
         function openEditRecipientModal(id, name, wa) {
             document.getElementById('edit_recipient_name').value = name;
             document.getElementById('edit_recipient_wa').value = wa;
@@ -283,10 +341,9 @@
             document.getElementById('editRecipientModal').classList.remove('hidden');
         }
 
-        // Logic Edit Template (Added sender_name)
         function openEditModal(invitation) {
             document.getElementById('edit_event_name').value = invitation.event_name;
-            document.getElementById('edit_sender_name').value = invitation.sender_name || ''; // Populate Sender
+            document.getElementById('edit_sender_name').value = invitation.sender_name || ''; 
             document.getElementById('edit_event_date').value = invitation.event_date.split('T')[0];
             let time = invitation.event_time.split('T')[1].substring(0, 5); 
             document.getElementById('edit_event_time').value = time;
@@ -298,7 +355,6 @@
 
         let currentInvitationId = null;
 
-        // Logic Preview Text (Added sender logic)
         function openSendModal(invitation) {
             currentInvitationId = invitation.id;
             
@@ -310,7 +366,6 @@
             const hari = dateObj.toLocaleDateString('id-ID', optionsHari);
             const tanggal = dateObj.toLocaleDateString('id-ID', optionsTanggal);
 
-            // LOGIC NAMA PENGIRIM (JS SIDE)
             const senderName = invitation.sender_name ? invitation.sender_name : '{{ Auth::user()->name }}';
 
             let text = "Kepada Yth,\n";
