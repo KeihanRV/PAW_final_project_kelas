@@ -1,0 +1,65 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\Recipient;
+use App\Models\User;
+
+class FilkomRecipientSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // 1. Ambil User Utama
+        $user = User::first();
+
+        if (!$user) {
+            $this->command->error('Tolong buat minimal 1 User dulu (Register)!');
+            return;
+        }
+
+        // 2. Data Dosen Departemen Sistem Informasi (SI/TI/PTI)
+        $lecturers = [
+            ['name' => 'Rizal Setya Perdana, S.Kom., M.Kom., Ph.D.', 'wa' => '081299990001'],
+            ['name' => 'Buce Trias Hanggara, S.Kom., M.Kom.', 'wa' => '081299990002'],
+            ['name' => 'Putra Pandu Adikara, S.Kom., M.Kom.', 'wa' => '081299990003'],
+            ['name' => 'Djoko Pramono, S.T., M.Kom.', 'wa' => '081299990004'],
+            ['name' => 'Ir. Tri Astoto Kurniawan, S.T., M.T., Ph.D., IPM.', 'wa' => '081299990005'],
+            ['name' => 'Bayu Rahayudi, S.T., M.T.', 'wa' => '081299990006'],
+            ['name' => 'Uun Hariyanti, S.Pd., M.Pd., Ph.D.', 'wa' => '081299990007'],
+            ['name' => 'Suprapto, S.T., M.T.', 'wa' => '081299990008'],
+            ['name' => 'Dr. Eng. Herman Tolle, S.T., M.T.', 'wa' => '081200000009'], 
+            ['name' => 'Ismiarta Aknuranda, S.T., M.Sc., Ph.D.', 'wa' => '081200000010'], 
+            ['name' => 'Retno Indah Rokhmawati, S.Pd., M.Pd.', 'wa' => '081200000011'], 
+            ['name' => 'Admaja Dwi Herlambang, S.Pd., M.Pd.', 'wa' => '081200000012'], 
+            ['name' => 'Issa Arwani, S.Kom., M.Sc.', 'wa' => '081200000013'],
+            ['name' => 'Drs. Marji, M.T.', 'wa' => '081200000014'],
+            ['name' => 'Komang Candra Brata, S.Kom., M.T., M.Sc.', 'wa' => '081200000015'],
+            ['name' => 'Wibisono Sukmo Wardhono, S.T., M.T.', 'wa' => '081200000016'],
+            ['name' => 'Dr. Eng. Ahmad Afif Supianto, S.Si., M.Kom.', 'wa' => '081200000017'],
+            ['name' => 'Dr. Ir. Fajar Pradana, S.ST., M.Eng.', 'wa' => '081200000018'],
+            ['name' => 'Yusi Tyroni Mursityo, S.Kom., M.AB.', 'wa' => '081200000019'],
+            ['name' => 'Satrio Hadi Wijoyo, S.Si., S.Pd., M.Kom.', 'wa' => '081200000020'],
+            ['name' => 'Diah Priharsari, S.T., M.T., Ph.D.', 'wa' => '081200000021'],
+            ['name' => 'Intan Sartika Eris Maghfiroh, S.T., M.Kom.', 'wa' => '081200000022'],
+            ['name' => 'Fatwa Ramdani, S.Si., M.Sc., D.Sc.', 'wa' => '081200000023'],
+            ['name' => 'Tri Afirianto, S.T., M.T.', 'wa' => '081200000024'],
+            ['name' => 'Heru Nurwarsito, S.Kom., M.Kom.', 'wa' => '081200000025'],
+            ['name' => 'Widhy Hayuhardhika N. P., S.Kom., M.Kom.', 'wa' => '081200000026'],
+            ['name' => 'Nanang Yudi Setiawan, S.T., M.Kom.', 'wa' => '081200000027'],
+            ['name' => 'Edy Santoso, S.Si., M.Kom.', 'wa' => '081200000028'],
+        ];
+
+        // 3. Hapus data lama (RESET) agar bersih
+        Recipient::where('user_id', $user->id)->delete();
+
+        // 4. Masukkan Data Baru
+        foreach ($lecturers as $dosen) {
+            Recipient::create([
+                'user_id' => $user->id,
+                'name'    => $dosen['name'],
+                'whatsapp_number' => $dosen['wa']
+            ]);
+        }
+    }
+}

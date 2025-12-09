@@ -67,10 +67,6 @@ class InvitationController extends Controller
         if ($recipient->user_id == Auth::id()) $recipient->delete();
         return back()->with('success', 'Contact removed.');
     }
-
-    // Simpan Template Undangan Baru
-// Simpan Template Undangan Baru
-    // Simpan Template Undangan Baru
     public function store(Request $request)
     {
         $request->validate([
