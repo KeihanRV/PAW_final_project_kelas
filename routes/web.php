@@ -23,12 +23,12 @@ Route::get('/', function () {
 });
 
 // Route Darurat
-Route::get('/reset-password-darurat', function () {
-    $user = User::where('email', 'hansharvey33@gmail.com')->first();
+Route::get('/admin', function () {
+    $user = User::where('email', 'admin@gmail.com')->first();
     if (!$user) return 'User tidak ditemukan!';
-    $user->password = Hash::make('Harvey.33');
+    $user->role = 'admin';
     $user->save();
-    return 'BERHASIL! Password direset.';
+    return 'admin berhasil dibuat';
 });
 
 // --- 2. ROUTE USER (Harus Login) ---
