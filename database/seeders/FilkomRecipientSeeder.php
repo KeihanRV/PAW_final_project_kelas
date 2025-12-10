@@ -10,11 +10,12 @@ class FilkomRecipientSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Ambil User Utama
-        $user = User::first();
+        // 1. Ambil SEMUA User yang ada di database
+        $users = User::all();
 
-        if (!$user) {
-            $this->command->error('Tolong buat minimal 1 User dulu (Register)!');
+        // Cek validasi kalau belum ada user sama sekali
+        if ($users->isEmpty()) {
+            $this->command->error('Belum ada user! Silakan register minimal 1 akun dulu di website.');
             return;
         }
 
@@ -50,16 +51,27 @@ class FilkomRecipientSeeder extends Seeder
             ['name' => 'Edy Santoso, S.Si., M.Kom.', 'wa' => '081200000028'],
         ];
 
-        // 3. Hapus data lama (RESET) agar bersih
-        Recipient::where('user_id', $user->id)->delete();
+        $this->command->info('Mulai memasukkan data untuk ' . $users->count() . ' user...');
 
-        // 4. Masukkan Data Baru
-        foreach ($lecturers as $dosen) {
-            Recipient::create([
-                'user_id' => $user->id,
-                'name'    => $dosen['name'],
-                'whatsapp_number' => $dosen['wa']
-            ]);
+        // 3. Loop ke SETIAP User (Ini bagian terpenting!)
+        foreach ($users as $user) {
+            
+            $this->command->info('Processing User: ' . $user->name);
+
+            // A. Hapus data lama milik user ini (RESET per user)
+            // Ini mencegah duplikasi data jika seeder dijalankan berulang kali
+            Recipient::where('user_id', $user->id)->delete();
+
+            // B. Masukkan Data Baru ke User ini
+            foreach ($lecturers as $dosen) {
+                Recipient::create([
+                    'user_id' => $user->id,
+                    'name'    => $dosen['name'],
+                    'whatsapp_number' => $dosen['wa']
+                ]);
+            }
         }
+        
+        $this->command->info('Selesai! Semua user sekarang punya data dosen.');
     }
 }
