@@ -15,7 +15,7 @@ Proyek ini dikembangkan sebagai **Final Project** untuk mata kuliah **Pemrograma
 
 ## 🛠️ Teknologi yang Digunakan (Tech Stack)
 
-* **Framework Backend:** [Laravel 11](https://laravel.com) (PHP 8.2+)
+* **Framework Backend:** [Laravel 11](https://laravel.com) (PHP 8.3+)
 * **Frontend Tooling:** [Vite](https://vitejs.dev)
 * **Styling:** [Tailwind CSS](https://tailwindcss.com)
 * **Templating Engine:** Blade
@@ -29,7 +29,7 @@ Proyek ini dikembangkan sebagai **Final Project** untuk mata kuliah **Pemrograma
 Sebelum menginstal proyek ini, pastikan komputer Anda telah terinstal:
 
 1.  **XAMPP** (Pastikan Apache & MySQL berjalan).
-2.  **PHP** (Minimal versi 8.2).
+2.  **PHP** (Minimal versi 8.3).
 3.  **Composer** (Package manager untuk PHP).
 4.  **Node.js & NPM** (Untuk compile aset frontend).
 5.  **Git** (Untuk clone repository).
