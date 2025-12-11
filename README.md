@@ -96,7 +96,7 @@ php artisan key:generate
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=paw_project
+DB_DATABASE=paw_project_kelas
 DB_USERNAME=root
 DB_PASSWORD=
 ```
